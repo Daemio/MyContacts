@@ -1,0 +1,73 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+     tools:context=".MainActivity">
+
+    <RelativeLayout
+        android:id="@+id/topPanel"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="@android:color/black">
+        <TextView
+            android:id="@+id/tvContactNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Contacts(90)"
+            android:textAlignment="center"
+            android:textColor="@android:color/white"
+            android:textSize="30dp"
+            android:layout_centerInParent="true"
+            android:gravity="center_vertical|center_horizontal" />
+        <Button
+            android:id="@+id/btnUploadPhoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Upload Photo"
+            android:textColor="@android:color/white"
+            android:layout_toRightOf="@id/tvContactNumber"
+            android:background="@android:color/holo_red_light"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/bottomPanel"
+        android:orientation="horizontal"
+        android:background="@android:color/black"
+        >
+        <ImageButton
+            android:id="@+id/btnAll"
+            android:src="@drawable/btn_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+        <ImageButton
+            android:id="@+id/btnFavorite"
+            android:src="@drawable/btn_favorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+        <ImageButton
+            android:id="@+id/btnHello"
+            android:src="@drawable/btn_hello"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+    <ListView
+        android:layout_centerInParent="true"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/topPanel"
+        android:layout_above="@id/bottomPanel"
+        android:id="@+id/listView" >
+    </ListView>
+
+</RelativeLayout>
