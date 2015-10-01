@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="#434343">
+
+    <Button
+        android:id="@+id/tab_btn_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|left"
+        android:layout_margin="10dp"
+        android:layout_weight="1"
+        android:background="@drawable/btn_tab_btn"
+        android:text="Cancel"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white" />
+
+    <Button
+        android:id="@+id/tab_btn_send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical|right"
+        android:layout_margin="10dp"
+        android:background="@drawable/btn_tab_btn"
+        android:text="Send"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white" />
+</RelativeLayout>

@@ -1,37 +1,66 @@
 package com.example.damian.mycontacts;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v7.app.AppCompatActivity;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.example.damian.mycontacts.adapter.MySimpleAdapter;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
+    final String ATTRIBUTE_NUMBER = "name";
+    final String ATTRIBUTE_NAME = "description";
+    final String ATTRIBUTE_FAVORITE = "favorite";
+    final String ATTRIBUTE_IMAGE = "image";
+
+    ListView lvMain;
+    TextView tvNnumberOfContacts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-    }
+        lvMain = (ListView) findViewById(R.id.listView);
+        tvNnumberOfContacts = (TextView) findViewById(R.id.tvContactNumber);
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        // массив данных
+        int[] numbers = { 1, 3, 7, 17, 19, 36, 56, 57,58,59,78,80,78,80,78,80,78,80,78,80,78,80 };
+        String[] names = {"John", "Rob", "Mary", "Alex", "Ann", "Andrew", "Alex", "Ann", "Andrew", "Alex", "Ann", "Andrew", "Alex", "Ann", "Andrew"};
+        int[] images = new int[names.length];
+        for(int i=0;i<names.length;i++){
+            images[i] = R.drawable.simple;
         }
 
-        return super.onOptionsItemSelected(item);
+
+
+        // упаковываем данные в понятную для адаптера структуру
+        ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>(
+                names.length);
+        Map<String, Object> m;
+
+        for (int i = 0; i < names.length; i++) {
+            m = new HashMap<String, Object>();
+            m.put(ATTRIBUTE_NUMBER, numbers[i]);
+            m.put(ATTRIBUTE_NAME, names[i]);
+            m.put(ATTRIBUTE_IMAGE, images[i]);
+            data.add(m);
+        }
+        // массив имен атрибутов, из которых будут читаться данные
+        String[] from = { ATTRIBUTE_NUMBER, ATTRIBUTE_NAME,
+                ATTRIBUTE_IMAGE};
+        // массив ID View-компонентов, в которые будут вставлять данные
+        int[] to = { R.id.tvNumber, R.id.tvName, R.id.imageView};
+
+        // создаем адаптер
+        MySimpleAdapter sAdapter = new MySimpleAdapter(this, data,
+                R.layout.item, from, to);
+
+        // определяем список и присваиваем ему адаптер
+        lvMain.setAdapter(sAdapter);
+        tvNnumberOfContacts.setText("Contacts("+sAdapter.getCount()+")");
     }
 }
