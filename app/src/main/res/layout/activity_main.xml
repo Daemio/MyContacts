@@ -31,7 +31,7 @@
             android:layout_height="25dp"
             android:textSize="12dp"
             android:layout_toRightOf="@id/tvContactNumber"
-            android:background="@android:color/holo_red_light"
+            android:background="@drawable/btn_upload_photo"
             android:text="Upload Photo"
             android:textAllCaps="false"
             android:layout_marginLeft="20dp"
