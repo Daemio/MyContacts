@@ -5,11 +5,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.damian.mycontacts.adapter.MySimpleAdapter;
+import com.example.damian.mycontacts.adapter.MyArrayAdapter;
+import com.example.damian.mycontacts.model.UserData;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+
 
 public class MainActivity extends AppCompatActivity {
     final String ATTRIBUTE_NUMBER = "name";
@@ -28,39 +28,28 @@ public class MainActivity extends AppCompatActivity {
         tvNnumberOfContacts = (TextView) findViewById(R.id.tvContactNumber);
 
         // массив данных
-        int[] numbers = { 1, 3, 7, 17, 19, 36, 56, 57,58,59,78,80,78,80,78,80,78,80,78,80,78,80 };
-        String[] names = {"John", "Rob", "Mary", "Alex", "Ann", "Andrew", "Alex", "Ann", "Andrew", "Alex", "Ann", "Andrew", "Alex", "Ann", "Andrew"};
-        int[] images = new int[names.length];
-        for(int i=0;i<names.length;i++){
-            images[i] = R.drawable.simple;
-        }
-
-
-
-        // упаковываем данные в понятную для адаптера структуру
-        ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>(
-                names.length);
-        Map<String, Object> m;
-
-        for (int i = 0; i < names.length; i++) {
-            m = new HashMap<String, Object>();
-            m.put(ATTRIBUTE_NUMBER, numbers[i]);
-            m.put(ATTRIBUTE_NAME, names[i]);
-            m.put(ATTRIBUTE_IMAGE, images[i]);
-            data.add(m);
-        }
-        // массив имен атрибутов, из которых будут читаться данные
-        String[] from = { ATTRIBUTE_NUMBER, ATTRIBUTE_NAME,
-                ATTRIBUTE_IMAGE};
-        // массив ID View-компонентов, в которые будут вставлять данные
-        int[] to = { R.id.tvNumber, R.id.tvName, R.id.imageView};
+        ArrayList data = new ArrayList<UserData>();
+        data.add(new UserData("Ann", "1", true, null));
+        data.add(new UserData("Andrew", "1", true, null));
+        data.add(new UserData("Damian", "1", false, null));
+        data.add(new UserData("Den", "1", true, null));
+        data.add(new UserData("Sam", "1", false, null));
+        data.add(new UserData("Bill", "1", true, null));
+        data.add(new UserData("Tom", "1", true, null));
+        data.add(new UserData("Caren", "1", false, null));
+        data.add(new UserData("Michael", "1", false, null));
+        data.add(new UserData("Stew", "1", false, null));
+        data.add(new UserData("Rob", "1", true, null));
+        data.add(new UserData("Jay", "1", true, null));
+        data.add(new UserData("Helen", "1", false, null));
+        data.add(new UserData("Michael", "1", false, null));
 
         // создаем адаптер
-        MySimpleAdapter sAdapter = new MySimpleAdapter(this, data,
-                R.layout.item, from, to);
+        MyArrayAdapter sAdapter = new MyArrayAdapter(this, R.layout.item);
+        sAdapter.addAll(data); //добавим элементы из нашего контейнера
 
-        // определяем список и присваиваем ему адаптер
+        // присваиваем адаптер
         lvMain.setAdapter(sAdapter);
-        tvNnumberOfContacts.setText("Contacts("+sAdapter.getCount()+")");
+        tvNnumberOfContacts.setText("Contacts(" + sAdapter.getCount() + ")");
     }
 }
