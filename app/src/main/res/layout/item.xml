@@ -40,7 +40,7 @@
             android:id="@+id/checkBoxFavorite"
             android:layout_width="15dp"
             android:layout_height="15dp"
-            android:layout_alignTop="@+id/tvName"
+            android:layout_alignTop="@+id/tvDescription"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="0dp"
             android:layout_toEndOf="@id/frameLayout"
@@ -48,7 +48,7 @@
             android:button="@drawable/cb_selector" />
 
         <TextView
-            android:id="@+id/tvName"
+            android:id="@+id/tvDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
