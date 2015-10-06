@@ -7,8 +7,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * Created by Admin on 05.10.2015.
@@ -24,7 +22,7 @@ public class AddContactActivity extends Activity implements View.OnClickListener
         setContentView(R.layout.activity_add_contact);
         ImageView imgPhoto = (ImageView) findViewById(R.id.imageView);
         String imgUlr = getIntent().getStringExtra(MainActivity.BUNDLE_KEY);
-        imgPhoto.setImageURI(Uri.parse(imgUlr));
+        CameraUtils.setPic(imgPhoto, imgUlr,this);
 
         btnDeleteText = (Button) findViewById(R.id.btnDeleteText);
         btnCancel = (Button) findViewById(R.id.tab_btn_cancel);
@@ -33,8 +31,6 @@ public class AddContactActivity extends Activity implements View.OnClickListener
         btnCancel.setOnClickListener(this);
         btnDeleteText.setOnClickListener(this);
         etEditDescription = (EditText) findViewById(R.id.etEditDescription);
-
-
     }
 
     @Override
@@ -43,7 +39,7 @@ public class AddContactActivity extends Activity implements View.OnClickListener
             case R.id.btnDeleteText:
                 //delete text
                 etEditDescription.setText("");
-                Toast.makeText(this,"pressed",Toast.LENGTH_LONG).show();
+                //Toast.makeText(this,"pressed",Toast.LENGTH_LONG).show();
                 break;
             case R.id.tab_btn_cancel:
                 finish();

@@ -2,10 +2,8 @@ package com.example.damian.mycontacts;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -18,14 +16,11 @@ import com.example.damian.mycontacts.adapter.MyArrayAdapter;
 import com.example.damian.mycontacts.dialog.ChooseDialog;
 import com.example.damian.mycontacts.model.UserData;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity {
-    public final static String BUNDLE_KEY = "key";
+    public final static String BUNDLE_KEY = "my bundle key";
 
     final String ATTRIBUTE_NUMBER = "name";
     final String ATTRIBUTE_NAME = "description";
@@ -82,72 +77,61 @@ public class MainActivity extends AppCompatActivity {
         tvNnumberOfContacts.setText("Contacts(" + sAdapter.getCount() + ")");
     }
 
-
     private void showChooseDialog() {
-        final ChooseDialog dialog = new ChooseDialog(this,R.style.FullHeightDialog);
+        final ChooseDialog dialog = new ChooseDialog(this, R.style.FullHeightDialog);
         dialog.setClick(new ChooseDialog.OnClick() {
-            @Override
-            public void onClick(int actionCode) {
-                Intent intent;
-                if (actionCode == 1) {
-                    //call camera
-                    //Toast.makeText(getApplicationContext(),"Camera",Toast.LENGTH_LONG).show();
-                    intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    File directory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "MyContactsPictures");
-                    if (!directory.exists()) {
-                        directory.mkdirs();
-                    }
-                    File file = new File(directory.getPath() + "/" + "photo_"
-                            + System.currentTimeMillis() + ".jpg");
-                    Uri photoUri = Uri.fromFile(file);
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-                    startActivityForResult(intent, SHOOT_PHOTO);
+                            @Override
+                            public void onClick(int actionCode) {
+                                Intent intent;
+                                if (actionCode == 1) {
+                                    intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                                    startActivityForResult(intent, SHOOT_PHOTO);
+                                } else {
+                                    //call gallery
+                                    intent = new Intent(Intent.ACTION_PICK);
+                                    intent.setType("image/*");
+                                    startActivityForResult(intent, SELECT_PHOTO);
+                                }
+                                dialog.dismiss();
+                            }
+                        }
 
-                } else {
-                    //call gallery
-                    //Toast.makeText(getApplicationContext(),"Gallery",Toast.LENGTH_LONG).show();
-                    intent = new Intent(Intent.ACTION_PICK);
-                    intent.setType("image/*");
-                    startActivityForResult(intent, SELECT_PHOTO);
-                }
-                dialog.dismiss();
-            }
-        });
+        );
         dialog.show();
     }
-
-//    @Override
-//    protected Dialog onCreateDialog(int id) {
-//        AlertDialog.Builder adBilder = new AlertDialog.Builder(this);
-//        if (id == DIALOG) {
-//            adBilder.setTitle("Select image source");
-//            final CharSequence items[] = {"From Camera", "From SD Card"};
-//            adBilder.setItems(items, new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface dialog, int which) {
-//
-//                }
-//            });
-//        }
-//        return adBilder.create();
-//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
-
-        if ((requestCode == SELECT_PHOTO) || (requestCode == SHOOT_PHOTO)) {
+        if (requestCode == SELECT_PHOTO) {
             if (resultCode == RESULT_OK) {
                 Uri selectedImage = imageReturnedIntent.getData();
                 if (selectedImage.toString() != null) {
                     Intent myIntent = new Intent(MainActivity.this, AddContactActivity.class);
                     myIntent.putExtra(BUNDLE_KEY, selectedImage.toString());
                     startActivity(myIntent);
-                }else {
+                } else {
                     Toast.makeText(this, "selectedImage == null", Toast.LENGTH_SHORT).show();
                 }
             }
         }
+        if (requestCode == SHOOT_PHOTO && resultCode == RESULT_OK) {
+            loadCameraPhoto(imageReturnedIntent);
+        }
+    }
+
+    protected void loadCameraPhoto(Intent data) {
+        Bundle bundle = data.getExtras();
+        Bitmap bitmap = (Bitmap) bundle.get("data");
+        String uri;
+        if (bitmap != null) {
+            uri = MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "", "");
+        } else {
+            uri = String.valueOf(data.getData());
+        }
+        Intent myIntent = new Intent(MainActivity.this, AddContactActivity.class);
+        myIntent.putExtra(BUNDLE_KEY, uri);
+        startActivity(myIntent);
     }
 }
 

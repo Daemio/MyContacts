@@ -31,7 +31,7 @@ public class MyArrayAdapter extends ArrayAdapter<UserData> {
         ((CheckBox) convertView.findViewById(R.id.checkBoxFavorite)).setChecked(data.isFavorite());
         ((TextView) convertView.findViewById(R.id.tvNumber)).setText(data.getNumber());
         ((TextView) convertView.findViewById(R.id.tvDescription)).setText(data.getDescription());
-        ((ImageView) convertView.findViewById(R.id.imageView)).setImageDrawable(getContext().getDrawable(R.drawable.simple)); //toFix
+        ((ImageView) convertView.findViewById(R.id.imageView)).setBackgroundResource(R.drawable.simple); //toFix
 
         return convertView;
     }
