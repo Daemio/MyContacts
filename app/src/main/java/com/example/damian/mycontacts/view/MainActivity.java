@@ -1,4 +1,4 @@
-package com.example.damian.mycontacts;
+package com.example.damian.mycontacts.view;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -12,8 +12,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.damian.mycontacts.adapter.MyArrayAdapter;
-import com.example.damian.mycontacts.dialog.ChooseDialog;
+import com.example.damian.mycontacts.R;
+import com.example.damian.mycontacts.view.adapter.MyArrayAdapter;
+import com.example.damian.mycontacts.view.dialog.ChooseDialog;
 import com.example.damian.mycontacts.model.UserData;
 
 import java.util.ArrayList;
@@ -53,20 +54,20 @@ public class MainActivity extends AppCompatActivity {
 
         // массив данных
         ArrayList data = new ArrayList<UserData>();
-        data.add(new UserData("Ann", "1", true, null));
-        data.add(new UserData("Andrew", "2", true, null));
-        data.add(new UserData("Damian", "3", false, null));
-        data.add(new UserData("Den", "4", true, null));
-        data.add(new UserData("Sam", "5", false, null));
-        data.add(new UserData("Bill", "6", true, null));
-        data.add(new UserData("Tom", "7", true, null));
-        data.add(new UserData("Caren", "8", false, null));
-        data.add(new UserData("Michael", "11", false, null));
-        data.add(new UserData("Stew", "13", false, null));
-        data.add(new UserData("Rob", "14", true, null));
-        data.add(new UserData("Jay", "16", true, null));
-        data.add(new UserData("Helen", "17", false, null));
-        data.add(new UserData("Michael", "31", false, null));
+        data.add(new UserData("Ann", null, true));
+        data.add(new UserData("Andrew", null, true));
+        data.add(new UserData("Damian", null, false));
+        data.add(new UserData("Den", null, true));
+        data.add(new UserData("Sam",null, true));
+        data.add(new UserData("Bill", null, false));
+        data.add(new UserData("Tom", null, true));
+        data.add(new UserData("Caren", null, false));
+        data.add(new UserData("Michael",null, false));
+        data.add(new UserData("Stew", null, true));
+        data.add(new UserData("Rob", null, false));
+        data.add(new UserData("Jay", null, true));
+        data.add(new UserData("Helen", null, false));
+        data.add(new UserData("Michael", null, true));
 
         // создаем адаптер
         MyArrayAdapter sAdapter = new MyArrayAdapter(this, R.layout.item);

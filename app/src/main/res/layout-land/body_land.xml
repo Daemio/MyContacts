@@ -43,6 +43,8 @@
             android:layout_margin="10dp"
             android:background="@drawable/btn_tab_btn"
             android:text="Delete Text"
+            android:textColor="@android:color/white"
+            android:enabled="false"
             android:textAllCaps="false" />
 
         <TextView

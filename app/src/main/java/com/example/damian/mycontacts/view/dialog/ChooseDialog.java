@@ -1,12 +1,9 @@
-package com.example.damian.mycontacts.dialog;
+package com.example.damian.mycontacts.view.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.example.damian.mycontacts.R;
 

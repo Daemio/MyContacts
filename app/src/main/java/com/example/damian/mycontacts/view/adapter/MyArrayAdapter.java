@@ -1,4 +1,4 @@
-package com.example.damian.mycontacts.adapter;
+package com.example.damian.mycontacts.view.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -29,7 +29,7 @@ public class MyArrayAdapter extends ArrayAdapter<UserData> {
         //then fill it
 
         ((CheckBox) convertView.findViewById(R.id.checkBoxFavorite)).setChecked(data.isFavorite());
-        ((TextView) convertView.findViewById(R.id.tvNumber)).setText(data.getNumber());
+        ((TextView) convertView.findViewById(R.id.tvNumber)).setText(""+data.getId());
         ((TextView) convertView.findViewById(R.id.tvDescription)).setText(data.getDescription());
         ((ImageView) convertView.findViewById(R.id.imageView)).setBackgroundResource(R.drawable.simple); //toFix
 

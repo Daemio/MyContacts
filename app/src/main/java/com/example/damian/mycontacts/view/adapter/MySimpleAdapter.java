@@ -1,4 +1,4 @@
-package com.example.damian.mycontacts.adapter;
+package com.example.damian.mycontacts.view.adapter;
 
 import android.content.Context;
 import android.widget.ImageView;

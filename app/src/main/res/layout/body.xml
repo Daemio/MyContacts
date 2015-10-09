@@ -42,7 +42,9 @@
             android:layout_alignParentStart="true"
             android:layout_margin="10dp"
             android:background="@drawable/btn_tab_btn"
+            android:textColor="@android:color/white"
             android:text="Delete Text"
+            android:enabled="false"
             android:textAllCaps="false" />
 
         <TextView
