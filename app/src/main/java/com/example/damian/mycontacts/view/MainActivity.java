@@ -12,12 +12,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.damian.mycontacts.MyCallback;
 import com.example.damian.mycontacts.R;
+import com.example.damian.mycontacts.database.DBGateWay;
 import com.example.damian.mycontacts.view.adapter.MyArrayAdapter;
 import com.example.damian.mycontacts.view.dialog.ChooseDialog;
 import com.example.damian.mycontacts.model.UserData;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -35,6 +38,21 @@ public class MainActivity extends AppCompatActivity {
     ListView lvMain;
     TextView tvNnumberOfContacts;
     Button addPhoto;
+    Button btnShowAllContacts;
+    Button btnShowFavoriteContacts;
+
+    MyArrayAdapter sAdapter;
+    List data; //data from db
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        data = DBGateWay.getAllContacts();
+        sAdapter.clear();
+        sAdapter.addAll(data);
+        tvNnumberOfContacts.setText("Contacts(" + sAdapter.getCount() + ")");
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +60,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         lvMain = (ListView) findViewById(R.id.listView);
         tvNnumberOfContacts = (TextView) findViewById(R.id.tvContactNumber);
+
+        btnShowAllContacts = (Button) findViewById(R.id.btnAll);
+        btnShowFavoriteContacts = (Button) findViewById(R.id.btnFavorite);
+        BottomButtonsListener bottomButtonsListener = new BottomButtonsListener();
+        btnShowAllContacts.setOnClickListener(bottomButtonsListener);
+        btnShowFavoriteContacts.setOnClickListener(bottomButtonsListener);
+
 
         addPhoto = (Button) findViewById(R.id.btnUploadPhoto);
         addPhoto.setOnClickListener(new View.OnClickListener() {
@@ -53,7 +78,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         // массив данных
-        ArrayList data = new ArrayList<UserData>();
+        data = new ArrayList<UserData>();
+       /*
         data.add(new UserData("Ann", null, true));
         data.add(new UserData("Andrew", null, true));
         data.add(new UserData("Damian", null, false));
@@ -68,11 +94,28 @@ public class MainActivity extends AppCompatActivity {
         data.add(new UserData("Jay", null, true));
         data.add(new UserData("Helen", null, false));
         data.add(new UserData("Michael", null, true));
+        */
+
+
+        data = DBGateWay.getAllContacts();
 
         // создаем адаптер
-        MyArrayAdapter sAdapter = new MyArrayAdapter(this, R.layout.item);
+        sAdapter = new MyArrayAdapter(this, R.layout.item);
         sAdapter.addAll(data); //добавим элементы из нашего контейнера
 
+
+        sAdapter.setMyCallback(new MyCallback() {
+            @Override
+            public void callBackItemDeleted(UserData data) {
+                sAdapter.remove(data);
+                DBGateWay.deleteContact(data);
+            }
+
+            @Override
+            public void callBackItemFavoriteStateChanged(UserData data) {
+                DBGateWay.editContact(data);
+            }
+        });
         // присваиваем адаптер
         lvMain.setAdapter(sAdapter);
         tvNnumberOfContacts.setText("Contacts(" + sAdapter.getCount() + ")");
@@ -133,6 +176,26 @@ public class MainActivity extends AppCompatActivity {
         Intent myIntent = new Intent(MainActivity.this, AddContactActivity.class);
         myIntent.putExtra(BUNDLE_KEY, uri);
         startActivity(myIntent);
+    }
+
+    private class BottomButtonsListener implements View.OnClickListener{
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()){
+                case R.id.btnAll:
+                    data = DBGateWay.getAllContacts();
+                    sAdapter.clear();
+                    sAdapter.addAll(data);
+                    tvNnumberOfContacts.setText("Contacts(" + sAdapter.getCount() + ")");
+                    break;
+                case R.id.btnFavorite:
+                    data = DBGateWay.getFavoriteContacts();
+                    sAdapter.clear();
+                    sAdapter.addAll(data);
+                    tvNnumberOfContacts.setText("Contacts(" + sAdapter.getCount() + ")");
+                    break;
+            }
+        }
     }
 }
 

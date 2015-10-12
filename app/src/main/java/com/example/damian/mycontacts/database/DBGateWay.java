@@ -46,12 +46,12 @@ public class DBGateWay {
         List<UserData> datas = new ArrayList<UserData>();
         Cursor cursor;
         if (isFavoriteList){
-            cursor = db.rawQuery(DBUtils.SELECT_ALL + DBUtils.TABLE_NAME + "WHERE FAVORITE=1",null);
+            cursor = db.rawQuery(DBUtils.SELECT_ALL + DBUtils.TABLE_NAME + " WHERE " + DBUtils.FAVORITE +"=1",null);
         }else {
             cursor = db.rawQuery(DBUtils.SELECT_ALL + DBUtils.TABLE_NAME,null);
         }
         if(!cursor.moveToFirst()){
-            return null;
+            return datas;
         }
         do {
             datas.add(DBUtils.parseCursor(cursor));

@@ -6,11 +6,14 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.example.damian.mycontacts.CameraUtils;
 import com.example.damian.mycontacts.R;
+import com.example.damian.mycontacts.database.DBGateWay;
+import com.example.damian.mycontacts.model.UserData;
 
 /**
  * Created by Admin on 05.10.2015.
@@ -20,13 +23,14 @@ public class AddContactActivity extends Activity implements View.OnClickListener
     Button btnCancel;
     Button btnSend;
     EditText etEditDescription;
+    String imgUrl;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_contact);
         ImageView imgPhoto = (ImageView) findViewById(R.id.imageView);
-        String imgUlr = getIntent().getStringExtra(MainActivity.BUNDLE_KEY);
-        CameraUtils.setPic(imgPhoto, imgUlr, this);
+        imgUrl = getIntent().getStringExtra(MainActivity.BUNDLE_KEY);
+        CameraUtils.setPic(imgPhoto, imgUrl, this);
 
         btnDeleteText = (Button) findViewById(R.id.btnDeleteText);
         btnCancel = (Button) findViewById(R.id.tab_btn_cancel);
@@ -34,6 +38,9 @@ public class AddContactActivity extends Activity implements View.OnClickListener
         btnSend.setOnClickListener(this);
         btnCancel.setOnClickListener(this);
         btnDeleteText.setOnClickListener(this);
+
+
+
         etEditDescription = (EditText) findViewById(R.id.etEditDescription);
         etEditDescription.addTextChangedListener(new TextWatcher() {
             @Override
@@ -71,6 +78,8 @@ public class AddContactActivity extends Activity implements View.OnClickListener
                 break;
             case R.id.tab_btn_send:
                 //add data todatabase
+                UserData data = new UserData(etEditDescription.getText().toString(),imgUrl,false);//initially not fav
+                DBGateWay.addContact(data);
                 finish();
                 break;
         }

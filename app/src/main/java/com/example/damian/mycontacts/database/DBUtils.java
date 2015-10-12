@@ -17,12 +17,12 @@ public class DBUtils {
     public  static final int DB_VERISION = 1;
 
     //table
-   public static final String TABLE_NAME = "CONTACTS";
+   public static final String TABLE_NAME = "contacts";
     //fields
     public  static final String ID = "id";
-    public static final String DESCRIPTION = "DESCRIPTION";
-    public  static final String IMAGE_PATH = "IMAGE_PATH";
-    public  static final String FAVORITE = "FAVORITE";
+    public static final String DESCRIPTION = "description";
+    public  static final String IMAGE_PATH = "image_path";
+    public  static final String FAVORITE = "favorite";
 
     //query
     public static final String CREATE = " CREATE TABLE IF NOT EXISTS ";

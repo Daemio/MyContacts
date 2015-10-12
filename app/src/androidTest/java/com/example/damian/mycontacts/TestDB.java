@@ -1,14 +1,11 @@
 package com.example.damian.mycontacts;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.example.damian.mycontacts.database.DBGateWay;
-import com.example.damian.mycontacts.database.DBUtils;
 import com.example.damian.mycontacts.database.MyDBHelper;
 import com.example.damian.mycontacts.model.UserData;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,7 +13,7 @@ import java.util.List;
  */
 public class TestDB extends ApplicationTest {
     public void testCheckCorrectData() {
-        MyDBHelper.getInstance().onUpgrade(MyDBHelper.getInstance().getWritableDatabase(),1,2);
+        //MyDBHelper.getInstance().onUpgrade(MyDBHelper.getInstance().getWritableDatabase(),1,2);
         DBGateWay.deleteAllContacts();
         UserData contact1 = new UserData("Sam", "path", true);
         DBGateWay.addContact(contact1);
@@ -37,11 +34,23 @@ public class TestDB extends ApplicationTest {
         List<UserData> list;
         list = DBGateWay.getAllContacts();
         for (UserData item:list){
-            Log.d("mylog",item.toString());
+            Log.d("mylogs",item.toString());
         }
 
     }
 
+    public void deleteAll(){
+        MyDBHelper.getInstance().onUpgrade(MyDBHelper.getInstance().getWritableDatabase(),1,2);
+        DBGateWay.deleteAllContacts();
+    }
+
+    public void testCheckFavorite(){
+        List<UserData> list;
+        list = DBGateWay.getFavoriteContacts();
+        for (int i=0;i<list.size();i++){
+            Log.d("mylogs", list.get(i).toString());
+        }
+    }
     public void testCheckCorrectData1() {
 
         DBGateWay.deleteAllContacts();
@@ -55,7 +64,7 @@ public class TestDB extends ApplicationTest {
         List<UserData> list;
         list = DBGateWay.getAllContacts();
         for (int i=0;i<list.size();i++){
-            Log.d("mylog", list.get(i).toString());
+            Log.d("mylogs", list.get(i).toString());
         }
 
     }
