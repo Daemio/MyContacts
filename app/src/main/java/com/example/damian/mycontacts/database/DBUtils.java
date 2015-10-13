@@ -5,9 +5,6 @@ import android.database.Cursor;
 
 import com.example.damian.mycontacts.model.UserData;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by Admin on 09.10.2015.
  */

@@ -6,7 +6,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -24,23 +23,19 @@ public class AddContactActivity extends Activity implements View.OnClickListener
     Button btnSend;
     EditText etEditDescription;
     String imgUrl;
+    UserData data;
+    int mode; //add or edit
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_contact);
         ImageView imgPhoto = (ImageView) findViewById(R.id.imageView);
-        imgUrl = getIntent().getStringExtra(MainActivity.BUNDLE_KEY);
-        CameraUtils.setPic(imgPhoto, imgUrl, this);
-
         btnDeleteText = (Button) findViewById(R.id.btnDeleteText);
         btnCancel = (Button) findViewById(R.id.tab_btn_cancel);
         btnSend = (Button) findViewById(R.id.tab_btn_send);
         btnSend.setOnClickListener(this);
         btnCancel.setOnClickListener(this);
         btnDeleteText.setOnClickListener(this);
-
-
-
         etEditDescription = (EditText) findViewById(R.id.etEditDescription);
         etEditDescription.addTextChangedListener(new TextWatcher() {
             @Override
@@ -62,6 +57,19 @@ public class AddContactActivity extends Activity implements View.OnClickListener
 
             }
         });
+
+       mode = getIntent().getIntExtra(MainActivity.BUNDLE_KEY_MODE, 0);
+
+        if(mode==MainActivity.MODE_NEW_CONTACT) {
+            imgUrl = getIntent().getStringExtra(MainActivity.BUNDLE_KEY);
+            CameraUtils.setPic(imgPhoto, imgUrl, this);
+        }else{
+            data = (UserData) getIntent().getSerializableExtra(MainActivity.BUNDLE_KEY);
+            btnSend.setText("Update");
+            etEditDescription.setText(data.getDescription());
+            imgUrl = data.getImagePath();
+            CameraUtils.setPic(imgPhoto,imgUrl,this);
+        }
     }
 
     @Override
@@ -78,8 +86,13 @@ public class AddContactActivity extends Activity implements View.OnClickListener
                 break;
             case R.id.tab_btn_send:
                 //add data todatabase
-                UserData data = new UserData(etEditDescription.getText().toString(),imgUrl,false);//initially not fav
-                DBGateWay.addContact(data);
+                if(mode==MainActivity.MODE_NEW_CONTACT) {
+                    data = new UserData(etEditDescription.getText().toString(), imgUrl, false);//initially not fav
+                    DBGateWay.addContact(data);
+                }else{
+                    data.setDescription(etEditDescription.getText().toString());
+                    DBGateWay.editContact(data);
+                }
                 finish();
                 break;
         }

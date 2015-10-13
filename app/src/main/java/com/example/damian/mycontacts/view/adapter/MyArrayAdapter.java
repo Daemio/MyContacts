@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -39,12 +38,12 @@ public class MyArrayAdapter extends ArrayAdapter<UserData> {
         }
         //then fill it
 
-        CheckBox cbFavorite = ((CheckBox) convertView.findViewById(R.id.checkBoxFavorite));
+        final CheckBox cbFavorite = ((CheckBox) convertView.findViewById(R.id.checkBoxFavorite));
         cbFavorite.setChecked(data.isFavorite());
         ((TextView) convertView.findViewById(R.id.tvNumber)).setText("" + data.getId());
         ((TextView) convertView.findViewById(R.id.tvDescription)).setText(data.getDescription());
         ImageView image = (ImageView) convertView.findViewById(R.id.imageView);
-        CameraUtils.setPic(image,data.getImagePath(), TheApplication.getInstance().getApplicationContext());//set image
+        CameraUtils.setPic(image, data.getImagePath(), TheApplication.getInstance().getApplicationContext());//set image
 
 
         //listeners and callbacks
@@ -53,23 +52,36 @@ public class MyArrayAdapter extends ArrayAdapter<UserData> {
             @Override
             public void onClick(View v) {
                 UserData data = getItem(position);
-                if (myCallback!= null){
+                if (myCallback != null) {
                     myCallback.callBackItemDeleted(data);
                 }
 
             }
         });
 
-        cbFavorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+        cbFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            public void onClick(View v) {
+                boolean checked = cbFavorite.isChecked();
                 UserData data = getItem(position);
-                data.setFavorite(isChecked);
-                if (myCallback!= null){
-                    myCallback.callBackItemFavoriteStateChanged(data);
+                if (myCallback != null) {
+                    myCallback.callBackItemFavoriteStateChanged(data, checked);
                 }
             }
         });
+
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UserData data = getItem(position);
+                if (myCallback != null) {
+                    myCallback.callBackListItemSelected(data);
+                }
+            }
+        });
+
+
         return convertView;
     }
 }

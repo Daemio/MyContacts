@@ -1,9 +1,11 @@
 package com.example.damian.mycontacts.model;
 
+import java.io.Serializable;
+
 /**
  * Created by Admin on 01.10.2015.
  */
-public class UserData {
+public class UserData implements Serializable{
     int id;
     String description;
     String imagePath;

@@ -9,15 +9,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.damian.mycontacts.MyCallback;
 import com.example.damian.mycontacts.R;
 import com.example.damian.mycontacts.database.DBGateWay;
+import com.example.damian.mycontacts.model.UserData;
 import com.example.damian.mycontacts.view.adapter.MyArrayAdapter;
 import com.example.damian.mycontacts.view.dialog.ChooseDialog;
-import com.example.damian.mycontacts.model.UserData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,21 +26,20 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     public final static String BUNDLE_KEY = "my bundle key";
+    public final static String BUNDLE_KEY_MODE = "mode";
 
-    final String ATTRIBUTE_NUMBER = "name";
-    final String ATTRIBUTE_NAME = "description";
-    final String ATTRIBUTE_FAVORITE = "favorite";
-    final String ATTRIBUTE_IMAGE = "image";
     final int SELECT_PHOTO = 100;
     final int SHOOT_PHOTO = 200;
+
+    public final static int MODE_NEW_CONTACT = 123;
+    public final static int MODE_EDIT_CONTACT = 321;
 
     final int DIALOG = 1;
 
     ListView lvMain;
     TextView tvNnumberOfContacts;
     Button addPhoto;
-    Button btnShowAllContacts;
-    Button btnShowFavoriteContacts;
+    RadioGroup rgBottom;
 
     MyArrayAdapter sAdapter;
     List data; //data from db
@@ -47,9 +47,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        data = DBGateWay.getAllContacts();
         sAdapter.clear();
+        data = DBGateWay.getAllContacts();
         sAdapter.addAll(data);
+        rgBottom.check(R.id.rbAll);
         tvNnumberOfContacts.setText("Contacts(" + sAdapter.getCount() + ")");
 
     }
@@ -59,14 +60,31 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         lvMain = (ListView) findViewById(R.id.listView);
+
         tvNnumberOfContacts = (TextView) findViewById(R.id.tvContactNumber);
-
-        btnShowAllContacts = (Button) findViewById(R.id.btnAll);
-        btnShowFavoriteContacts = (Button) findViewById(R.id.btnFavorite);
-        BottomButtonsListener bottomButtonsListener = new BottomButtonsListener();
-        btnShowAllContacts.setOnClickListener(bottomButtonsListener);
-        btnShowFavoriteContacts.setOnClickListener(bottomButtonsListener);
-
+        rgBottom = (RadioGroup) findViewById(R.id.rgBottom);
+        rgBottom.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.rbAll:
+                        sAdapter.clear();
+                        data = DBGateWay.getAllContacts();
+                        sAdapter.addAll(data);
+                        tvNnumberOfContacts.setText("Contacts(" + sAdapter.getCount() + ")");
+                        break;
+                    case R.id.rbFavorite:
+                        sAdapter.clear();
+                        data = DBGateWay.getFavoriteContacts();
+                        sAdapter.addAll(data);
+                        tvNnumberOfContacts.setText("Favorite(" + sAdapter.getCount() + ")");
+                        break;
+                    case R.id.rbExit:
+                        finish();
+                        break;
+                }
+            }
+        });
 
         addPhoto = (Button) findViewById(R.id.btnUploadPhoto);
         addPhoto.setOnClickListener(new View.OnClickListener() {
@@ -79,23 +97,6 @@ public class MainActivity extends AppCompatActivity {
 
         // массив данных
         data = new ArrayList<UserData>();
-       /*
-        data.add(new UserData("Ann", null, true));
-        data.add(new UserData("Andrew", null, true));
-        data.add(new UserData("Damian", null, false));
-        data.add(new UserData("Den", null, true));
-        data.add(new UserData("Sam",null, true));
-        data.add(new UserData("Bill", null, false));
-        data.add(new UserData("Tom", null, true));
-        data.add(new UserData("Caren", null, false));
-        data.add(new UserData("Michael",null, false));
-        data.add(new UserData("Stew", null, true));
-        data.add(new UserData("Rob", null, false));
-        data.add(new UserData("Jay", null, true));
-        data.add(new UserData("Helen", null, false));
-        data.add(new UserData("Michael", null, true));
-        */
-
 
         data = DBGateWay.getAllContacts();
 
@@ -109,16 +110,32 @@ public class MainActivity extends AppCompatActivity {
             public void callBackItemDeleted(UserData data) {
                 sAdapter.remove(data);
                 DBGateWay.deleteContact(data);
+                String s = tvNnumberOfContacts.getText().toString();
+                int numberOfContacts = sAdapter.getCount();
+                s = s.replaceFirst("[(][0123456789]*[)]", "(" + numberOfContacts + ")");
+                tvNnumberOfContacts.setText(s);
             }
 
             @Override
-            public void callBackItemFavoriteStateChanged(UserData data) {
+            public void callBackItemFavoriteStateChanged(UserData data, boolean isFavorite) {
+                data.setFavorite(isFavorite);
                 DBGateWay.editContact(data);
             }
+
+            @Override
+            public void callBackListItemSelected(UserData data) {
+                Intent intent = new Intent(MainActivity.this, AddContactActivity.class);
+                intent.putExtra(BUNDLE_KEY_MODE, MODE_EDIT_CONTACT);
+                intent.putExtra(BUNDLE_KEY, data);
+                startActivity(intent);
+            }
         });
+
         // присваиваем адаптер
         lvMain.setAdapter(sAdapter);
         tvNnumberOfContacts.setText("Contacts(" + sAdapter.getCount() + ")");
+
+
     }
 
     private void showChooseDialog() {
@@ -152,6 +169,7 @@ public class MainActivity extends AppCompatActivity {
                 Uri selectedImage = imageReturnedIntent.getData();
                 if (selectedImage.toString() != null) {
                     Intent myIntent = new Intent(MainActivity.this, AddContactActivity.class);
+                    myIntent.putExtra(BUNDLE_KEY_MODE, MODE_NEW_CONTACT);
                     myIntent.putExtra(BUNDLE_KEY, selectedImage.toString());
                     startActivity(myIntent);
                 } else {
@@ -174,28 +192,8 @@ public class MainActivity extends AppCompatActivity {
             uri = String.valueOf(data.getData());
         }
         Intent myIntent = new Intent(MainActivity.this, AddContactActivity.class);
+        myIntent.putExtra(BUNDLE_KEY_MODE, MODE_NEW_CONTACT);
         myIntent.putExtra(BUNDLE_KEY, uri);
         startActivity(myIntent);
     }
-
-    private class BottomButtonsListener implements View.OnClickListener{
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()){
-                case R.id.btnAll:
-                    data = DBGateWay.getAllContacts();
-                    sAdapter.clear();
-                    sAdapter.addAll(data);
-                    tvNnumberOfContacts.setText("Contacts(" + sAdapter.getCount() + ")");
-                    break;
-                case R.id.btnFavorite:
-                    data = DBGateWay.getFavoriteContacts();
-                    sAdapter.clear();
-                    sAdapter.addAll(data);
-                    tvNnumberOfContacts.setText("Contacts(" + sAdapter.getCount() + ")");
-                    break;
-            }
-        }
-    }
 }
-

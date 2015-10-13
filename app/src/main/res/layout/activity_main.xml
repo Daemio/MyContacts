@@ -39,46 +39,49 @@
              />
     </RelativeLayout>
 
-    <LinearLayout
-        android:id="@+id/bottomPanel"
+
+    <RadioGroup
+        android:id="@+id/rgBottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@android:color/black"
+        android:background="#434343"
         android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/btnAll"
+        <RadioButton
+            android:id="@+id/rbAll"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/btn_all"
-            android:layout_weight="1"/>
-
-        <Button
-            android:id="@+id/btnFavorite"
+            android:button="@drawable/btn_all"
+            android:layout_weight="1"
+            android:checked="true"
+            android:layout_marginLeft="30dp"/>
+        <RadioButton
+            android:id="@+id/rbFavorite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/btn_favorite"
+            android:button="@drawable/btn_favorite"
             android:layout_weight="1"
             android:layout_marginLeft="10dp"
-            />
-
-        <Button
-            android:id="@+id/btnHello"
+            android:checked="false"/>
+        <RadioButton
+            android:id="@+id/rbExit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/btn_hello"
+            android:button="@drawable/btn_exit"
             android:layout_weight="1"
             android:layout_marginLeft="10dp"
-           />
-    </LinearLayout>
+            android:checked="false"/>
+
+    </RadioGroup>
+
 
     <ListView
         android:id="@+id/listView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_above="@id/bottomPanel"
+        android:layout_above="@id/rgBottom"
         android:layout_below="@id/topPanel"
+        android:choiceMode="singleChoice"
         android:layout_centerInParent="true"></ListView>
 
 </RelativeLayout>

@@ -38,14 +38,15 @@
 
         <CheckBox
             android:id="@+id/checkBoxFavorite"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_alignTop="@+id/tvDescription"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="0dp"
             android:layout_toEndOf="@id/frameLayout"
             android:layout_toRightOf="@+id/frameLayout"
-            android:button="@drawable/cb_selector" />
+            android:button="@drawable/cb_selector"
+            />
 
         <TextView
             android:id="@+id/tvDescription"
