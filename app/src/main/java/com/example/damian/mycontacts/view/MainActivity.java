@@ -30,7 +30,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     public final static String BUNDLE_KEY = "my bundle key";
     public final static String BUNDLE_KEY_MODE = "mode";
-    final String TEMP_FILE_PATH = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath()+"tmp";
+    final String TEMP_FILE_PATH = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath()+"tmp.jpg";
 
     final int SELECT_PHOTO = 100;
     final int SHOOT_PHOTO = 200;
@@ -189,12 +189,15 @@ public class MainActivity extends AppCompatActivity {
     protected void loadCameraPhoto() {
         Uri uri=null;
         File fi = new File(TEMP_FILE_PATH);
+        //Log.d("mytag",""+(fi==null));
         try {
             uri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), fi.getAbsolutePath(), null, null));
+            Log.d("mytag","Uri is null"+(uri==null));
             if (!fi.delete()) {
                 Log.i("logMarker", "Failed to delete " + fi);
             }
         } catch (FileNotFoundException e) {
+            Log.d("mytag",""+(fi==null));
             e.printStackTrace();
         }
 
