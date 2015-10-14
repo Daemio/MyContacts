@@ -181,19 +181,11 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         if (requestCode == SHOOT_PHOTO && resultCode == RESULT_OK) {
-            loadCameraPhoto(imageReturnedIntent);
+            loadCameraPhoto();
         }
     }
 
-    protected void loadCameraPhoto(Intent imageReturnedIntent) {
-        //Bundle bundle = data.getExtras();
-        //Bitmap bitmap = (Bitmap) bundle.get("data");
-        //String uri;
-        //uri = MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "", "");
-
-        //Uri full = data.getData();
-        //Log.d("mytag",""+(full==null));
-        //Log.d("mytag",""+ Utils.hasImageCaptureBug());
+    protected void loadCameraPhoto() {
         Uri uri=null;
         File fi = new File("/sdcard/tmp");
         try {

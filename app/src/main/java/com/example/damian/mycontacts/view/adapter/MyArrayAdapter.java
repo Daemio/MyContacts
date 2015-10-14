@@ -10,11 +10,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.damian.mycontacts.CameraUtils;
 import com.example.damian.mycontacts.MyCallback;
 import com.example.damian.mycontacts.R;
 import com.example.damian.mycontacts.TheApplication;
 import com.example.damian.mycontacts.model.UserData;
+import com.squareup.picasso.Picasso;
 
 /**
  * Created by Admin on 02.10.2015.
@@ -43,8 +43,8 @@ public class MyArrayAdapter extends ArrayAdapter<UserData> {
         ((TextView) convertView.findViewById(R.id.tvNumber)).setText("" + data.getId());
         ((TextView) convertView.findViewById(R.id.tvDescription)).setText(data.getDescription());
         ImageView image = (ImageView) convertView.findViewById(R.id.imageView);
-        CameraUtils.setPic(image, data.getImagePath(), TheApplication.getInstance().getApplicationContext());//set image
-
+        //CameraUtils.setPic(image, data.getImagePath(), TheApplication.getInstance().getApplicationContext());//set image
+        Picasso.with(TheApplication.getInstance().getApplicationContext()).load(data.getImagePath()).into(image);
 
         //listeners and callbacks
 

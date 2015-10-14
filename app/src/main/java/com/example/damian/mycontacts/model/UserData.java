@@ -11,16 +11,6 @@ public class UserData implements Serializable{
     String imagePath;
     boolean favorite;
 
-    /*
-    public UserData(int id, String description, String imagePath, boolean favorite) {
-        this.id = id;
-        this.description = description;
-        this.favorite = favorite;
-        this.imagePath = imagePath;
-    }
-    */  //NEVER!
-
-
     public UserData(String description, String imagePath, boolean favorite) {
         this.description = description;
         this.favorite = favorite;

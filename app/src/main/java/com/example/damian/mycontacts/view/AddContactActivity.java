@@ -9,10 +9,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.example.damian.mycontacts.CameraUtils;
 import com.example.damian.mycontacts.R;
 import com.example.damian.mycontacts.database.DBGateWay;
 import com.example.damian.mycontacts.model.UserData;
+import com.squareup.picasso.Picasso;
 
 /**
  * Created by Admin on 05.10.2015.
@@ -60,15 +60,18 @@ public class AddContactActivity extends Activity implements View.OnClickListener
 
        mode = getIntent().getIntExtra(MainActivity.BUNDLE_KEY_MODE, 0);
 
+
         if(mode==MainActivity.MODE_NEW_CONTACT) {
             imgUrl = getIntent().getStringExtra(MainActivity.BUNDLE_KEY);
-            CameraUtils.setPic(imgPhoto, imgUrl, this);
+            //CameraUtils.setPic(imgPhoto, imgUrl, this);
+            Picasso.with(this).load(imgUrl).into(imgPhoto);
         }else{
             data = (UserData) getIntent().getSerializableExtra(MainActivity.BUNDLE_KEY);
             btnSend.setText("Update");
             etEditDescription.setText(data.getDescription());
             imgUrl = data.getImagePath();
-            CameraUtils.setPic(imgPhoto,imgUrl,this);
+            //CameraUtils.setPic(imgPhoto,imgUrl,this);
+            Picasso.with(this).load(imgUrl).into(imgPhoto);
         }
     }
 
