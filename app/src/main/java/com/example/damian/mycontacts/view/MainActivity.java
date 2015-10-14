@@ -121,8 +121,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void callBackItemFavoriteStateChanged(UserData data, boolean isFavorite) {
-                data.setFavorite(isFavorite);
+            public void callBackItemFavoriteStateChanged(UserData data) {
                 DBGateWay.editContact(data);
             }
 

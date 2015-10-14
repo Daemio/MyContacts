@@ -30,25 +30,43 @@ public class MyArrayAdapter extends ArrayAdapter<UserData> {
         this.myCallback = myCallback;
     }
 
+    static  class ViewHolder{
+        TextView tvNumber;
+        TextView tvDescription;
+        ImageView imageView;
+        CheckBox cbFavorite;
+    }
+
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        UserData data = getItem(position);
-        if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.item, null);
+        ViewHolder holder;
+        View v = convertView;
+        ;
+        if (v == null) {
+            v = LayoutInflater.from(getContext()).inflate(R.layout.item, null);
+            holder = new ViewHolder();
+            holder.tvNumber = (TextView) v.findViewById(R.id.tvNumber);
+            holder.tvDescription = (TextView) v.findViewById(R.id.tvDescription);
+            holder.imageView = (ImageView) v.findViewById(R.id.imageView);
+            holder.cbFavorite = (CheckBox) v.findViewById(R.id.checkBoxFavorite);
+            v.setTag(holder);
+
+        }else{
+            //recycled so no neeed to inflate and find views by id
+            holder = (ViewHolder) v.getTag();
         }
+
         //then fill it
 
-        final CheckBox cbFavorite = ((CheckBox) convertView.findViewById(R.id.checkBoxFavorite));
-        cbFavorite.setChecked(data.isFavorite());
-        ((TextView) convertView.findViewById(R.id.tvNumber)).setText("" + data.getId());
-        ((TextView) convertView.findViewById(R.id.tvDescription)).setText(data.getDescription());
-        ImageView image = (ImageView) convertView.findViewById(R.id.imageView);
-        //CameraUtils.setPic(image, data.getImagePath(), TheApplication.getInstance().getApplicationContext());//set image
-        Picasso.with(TheApplication.getInstance().getApplicationContext()).load(data.getImagePath()).into(image);
+        UserData data = getItem(position);
+        holder.cbFavorite.setChecked(data.isFavorite());
+        holder.tvNumber.setText("" + data.getId());
+        holder.tvDescription.setText(data.getDescription());
+        Picasso.with(TheApplication.getInstance().getApplicationContext()).load(data.getImagePath()).into(holder.imageView);
 
         //listeners and callbacks
 
-        ((ImageButton) convertView.findViewById(R.id.btnDelete)).setOnClickListener(new View.OnClickListener() {
+        ((ImageButton) v.findViewById(R.id.btnDelete)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 UserData data = getItem(position);
@@ -60,18 +78,19 @@ public class MyArrayAdapter extends ArrayAdapter<UserData> {
         });
 
 
-        cbFavorite.setOnClickListener(new View.OnClickListener() {
+        holder.cbFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean checked = cbFavorite.isChecked();
                 UserData data = getItem(position);
+                CheckBox cb = (CheckBox) v;
+                data.setFavorite(cb.isChecked());
                 if (myCallback != null) {
-                    myCallback.callBackItemFavoriteStateChanged(data, checked);
+                    myCallback.callBackItemFavoriteStateChanged(data);
                 }
             }
         });
 
-        convertView.setOnClickListener(new View.OnClickListener() {
+        v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 UserData data = getItem(position);
@@ -82,6 +101,6 @@ public class MyArrayAdapter extends ArrayAdapter<UserData> {
         });
 
 
-        return convertView;
+        return v;
     }
 }

@@ -7,6 +7,6 @@ import com.example.damian.mycontacts.model.UserData;
  */
 public interface MyCallback {
     void callBackItemDeleted(UserData data);
-    void callBackItemFavoriteStateChanged(UserData data,boolean isFavorite);
+    void callBackItemFavoriteStateChanged(UserData data);
     void callBackListItemSelected(UserData data);
 }
