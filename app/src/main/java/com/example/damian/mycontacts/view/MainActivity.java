@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import com.example.damian.mycontacts.MyCallback;
 import com.example.damian.mycontacts.R;
+import com.example.damian.mycontacts.Utils;
 import com.example.damian.mycontacts.database.DBGateWay;
 import com.example.damian.mycontacts.model.UserData;
 import com.example.damian.mycontacts.view.adapter.MyArrayAdapter;
@@ -186,11 +188,11 @@ public class MainActivity extends AppCompatActivity {
         Bundle bundle = data.getExtras();
         Bitmap bitmap = (Bitmap) bundle.get("data");
         String uri;
-        if (bitmap != null) {
-            uri = MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "", "");
-        } else {
-            uri = String.valueOf(data.getData());
-        }
+        uri = MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "", "");
+
+        //Uri full = data.getData();
+        //Log.d("mytag",""+(full==null));
+        //Log.d("mytag",""+ Utils.hasImageCaptureBug());
         Intent myIntent = new Intent(MainActivity.this, AddContactActivity.class);
         myIntent.putExtra(BUNDLE_KEY_MODE, MODE_NEW_CONTACT);
         myIntent.putExtra(BUNDLE_KEY, uri);
