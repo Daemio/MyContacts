@@ -3,6 +3,7 @@ package com.example.damian.mycontacts.view;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -29,6 +30,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     public final static String BUNDLE_KEY = "my bundle key";
     public final static String BUNDLE_KEY_MODE = "mode";
+    final String TEMP_FILE_PATH = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath()+"tmp";
 
     final int SELECT_PHOTO = 100;
     final int SHOOT_PHOTO = 200;
@@ -148,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
                                 Intent intent;
                                 if (actionCode == 1) {//camera
                                     intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File("/sdcard/tmp")));
+                                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(TEMP_FILE_PATH)));
                                     startActivityForResult(intent, SHOOT_PHOTO);
                                 } else {
                                     //call gallery
@@ -187,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
 
     protected void loadCameraPhoto() {
         Uri uri=null;
-        File fi = new File("/sdcard/tmp");
+        File fi = new File(TEMP_FILE_PATH);
         try {
             uri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), fi.getAbsolutePath(), null, null));
             if (!fi.delete()) {
