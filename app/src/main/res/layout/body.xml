@@ -45,7 +45,8 @@
             android:textColor="@android:color/white"
             android:text="Delete Text"
             android:enabled="false"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            android:padding="10dp"/>
 
         <TextView
             android:layout_width="wrap_content"

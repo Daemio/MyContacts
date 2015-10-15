@@ -3,7 +3,6 @@ package com.example.damian.mycontacts.view;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -16,6 +15,10 @@ import android.widget.Toast;
 
 import com.example.damian.mycontacts.MyCallback;
 import com.example.damian.mycontacts.R;
+import com.example.damian.mycontacts.Utils;
+import com.example.damian.mycontacts.asynctasks.TaskDeleteContact;
+import com.example.damian.mycontacts.asynctasks.TaskGetAllContacts;
+import com.example.damian.mycontacts.asynctasks.TaskGetFavoriteContacts;
 import com.example.damian.mycontacts.database.DBGateWay;
 import com.example.damian.mycontacts.model.UserData;
 import com.example.damian.mycontacts.view.adapter.MyArrayAdapter;
@@ -23,6 +26,7 @@ import com.example.damian.mycontacts.view.dialog.ChooseDialog;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,15 +34,12 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     public final static String BUNDLE_KEY = "my bundle key";
     public final static String BUNDLE_KEY_MODE = "mode";
-    final String TEMP_FILE_PATH = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath()+"tmp.jpg";
 
     final int SELECT_PHOTO = 100;
     final int SHOOT_PHOTO = 200;
 
     public final static int MODE_NEW_CONTACT = 123;
     public final static int MODE_EDIT_CONTACT = 321;
-
-    final int DIALOG = 1;
 
     ListView lvMain;
     TextView tvNnumberOfContacts;
@@ -51,11 +52,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        sAdapter.clear();
-        data = DBGateWay.getAllContacts();
-        sAdapter.addAll(data);
+        TaskGetAllContacts taskAll = new TaskGetAllContacts(data,sAdapter,tvNnumberOfContacts);
+        taskAll.execute();
         rgBottom.check(R.id.rbAll);
-        tvNnumberOfContacts.setText("Contacts(" + sAdapter.getCount() + ")");
 
     }
 
@@ -72,16 +71,20 @@ public class MainActivity extends AppCompatActivity {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
                     case R.id.rbAll:
-                        sAdapter.clear();
-                        data = DBGateWay.getAllContacts();
-                        sAdapter.addAll(data);
-                        tvNnumberOfContacts.setText("Contacts(" + sAdapter.getCount() + ")");
+                        //sAdapter.clear();
+                        //data = DBGateWay.getAllContacts();
+                        //sAdapter.addAll(data);
+                        TaskGetAllContacts taskAll = new TaskGetAllContacts(data,sAdapter,tvNnumberOfContacts);
+                        taskAll.execute();
+                        //tvNnumberOfContacts.setText("Contacts(" + sAdapter.getCount() + ")");
                         break;
                     case R.id.rbFavorite:
-                        sAdapter.clear();
-                        data = DBGateWay.getFavoriteContacts();
-                        sAdapter.addAll(data);
-                        tvNnumberOfContacts.setText("Favorite(" + sAdapter.getCount() + ")");
+                        //sAdapter.clear();
+                        //data = DBGateWay.getFavoriteContacts();
+                        //sAdapter.addAll(data);
+                        TaskGetFavoriteContacts taskFavorite = new TaskGetFavoriteContacts(data,sAdapter,tvNnumberOfContacts);
+                        taskFavorite.execute();
+                        //tvNnumberOfContacts.setText("Favorite(" + sAdapter.getCount() + ")");
                         break;
                     case R.id.rbExit:
                         finish();
@@ -99,21 +102,23 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        // массив данных
+        // data array
         data = new ArrayList<UserData>();
 
         data = DBGateWay.getAllContacts();
 
-        // создаем адаптер
+        // create adapter
         sAdapter = new MyArrayAdapter(this, R.layout.item);
-        sAdapter.addAll(data); //добавим элементы из нашего контейнера
+        sAdapter.addAll(data); //add elements
 
 
         sAdapter.setMyCallback(new MyCallback() {
             @Override
             public void callBackItemDeleted(UserData data) {
                 sAdapter.remove(data);
-                DBGateWay.deleteContact(data);
+                //DBGateWay.deleteContact(data);
+                TaskDeleteContact taskDelete = new TaskDeleteContact(data);
+                taskDelete.execute();
                 String s = tvNnumberOfContacts.getText().toString();
                 int numberOfContacts = sAdapter.getCount();
                 s = s.replaceFirst("[(][0123456789]*[)]", "(" + numberOfContacts + ")");
@@ -134,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // присваиваем адаптер
+        // set the adapter to out ListView
         lvMain.setAdapter(sAdapter);
         tvNnumberOfContacts.setText("Contacts(" + sAdapter.getCount() + ")");
 
@@ -147,9 +152,15 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onClick(int actionCode) {
                                 Intent intent;
-                                if (actionCode == 1) {//camera
+                                if (actionCode == 1) {//create capture image intent (camera)
                                     intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(TEMP_FILE_PATH)));
+                                    File f=null;
+                                    try {
+                                        f = Utils.createImageFile();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
                                     startActivityForResult(intent, SHOOT_PHOTO);
                                 } else {
                                     //call gallery
@@ -188,16 +199,16 @@ public class MainActivity extends AppCompatActivity {
 
     protected void loadCameraPhoto() {
         Uri uri=null;
-        File fi = new File(TEMP_FILE_PATH);
+        File fi = new File(Utils.getmCurrentPhotoPath());
         //Log.d("mytag",""+(fi==null));
         try {
             uri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), fi.getAbsolutePath(), null, null));
-            Log.d("mytag","Uri is null"+(uri==null));
+            //Log.d("mytag", "Uri is null" + (uri == null));
             if (!fi.delete()) {
                 Log.i("logMarker", "Failed to delete " + fi);
             }
         } catch (FileNotFoundException e) {
-            Log.d("mytag",""+(fi==null));
+            //Log.d("mytag",""+(fi==null));
             e.printStackTrace();
         }
 
