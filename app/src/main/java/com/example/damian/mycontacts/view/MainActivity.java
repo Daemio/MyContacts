@@ -126,12 +126,12 @@ public class MainActivity extends AppCompatActivity {
 
         data = new ArrayList<UserData>(); // data array
         filtered = new ArrayList<UserData>();
-        data = DBGateWay.getAllContacts();
         sAdapter = new MyArrayAdapter(this, R.layout.item); // create adapter
 
         new TaskGetAllContacts(new IDataBaseCallback() { //add elements
             @Override
             public void onDataCame(List<UserData> userData) {
+                data = userData;
                 sAdapter.addAll(userData);
                 tvNnumberOfContacts.setText("Contacts(" + sAdapter.getCount() + ")");
             }
