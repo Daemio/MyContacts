@@ -6,9 +6,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -47,9 +50,11 @@ public class MainActivity extends AppCompatActivity {
     TextView tvNnumberOfContacts;
     Button addPhoto;
     RadioGroup rgBottom;
+    EditText etSearch;
 
     MyArrayAdapter sAdapter;
     List data; //data from db
+    List filtered;
 
     @Override
     protected void onResume() {
@@ -79,20 +84,24 @@ public class MainActivity extends AppCompatActivity {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
                     case R.id.rbAll:
+                        etSearch.setText("");
                         new TaskGetAllContacts(new IDataBaseCallback() {
                             @Override
                             public void onDataCame(List<UserData> userData) {
                                 sAdapter.clear();
+                                data = userData;
                                 sAdapter.addAll(userData);
                                 tvNnumberOfContacts.setText("Contacts(" + sAdapter.getCount() + ")");
                             }
                         }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         break;
                     case R.id.rbFavorite:
+                        etSearch.setText("");
                         new TaskGetFavoriteContacts(new IDataBaseCallback() {
                             @Override
                             public void onDataCame(List<UserData> userData) {
                                 sAdapter.clear();
+                                data = userData;
                                 sAdapter.addAll(userData);
                                 tvNnumberOfContacts.setText("Favorite(" + sAdapter.getCount() + ")");
                             }
@@ -114,22 +123,31 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        // data array
-        data = new ArrayList<UserData>();
 
+        data = new ArrayList<UserData>(); // data array
+        filtered = new ArrayList<UserData>();
         data = DBGateWay.getAllContacts();
+        sAdapter = new MyArrayAdapter(this, R.layout.item); // create adapter
 
-        // create adapter
-        sAdapter = new MyArrayAdapter(this, R.layout.item);
-        sAdapter.addAll(data); //add elements
+        new TaskGetAllContacts(new IDataBaseCallback() { //add elements
+            @Override
+            public void onDataCame(List<UserData> userData) {
+                sAdapter.addAll(userData);
+                tvNnumberOfContacts.setText("Contacts(" + sAdapter.getCount() + ")");
+            }
+        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+        // set the adapter to out ListView
+        lvMain.setAdapter(sAdapter);
 
 
         sAdapter.setMyCallback(new MyCallback() {
             @Override
-            public void callBackItemDeleted(UserData data) {
-                sAdapter.remove(data);
-                //DBGateWay.deleteContact(data);
-                TaskDeleteContact taskDelete = new TaskDeleteContact(data);
+            public void callBackItemDeleted(UserData item) {
+                sAdapter.remove(item);
+                data.remove(item);
+                //DBGateWay.deleteContact(item);
+                TaskDeleteContact taskDelete = new TaskDeleteContact(item);
                 taskDelete.execute();
                 String s = tvNnumberOfContacts.getText().toString();
                 int numberOfContacts = sAdapter.getCount();
@@ -138,25 +156,59 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void callBackItemFavoriteStateChanged(UserData data) {
-                DBGateWay.editContact(data);
+            public void callBackItemFavoriteStateChanged(UserData item) {
+                DBGateWay.editContact(item);
             }
 
             @Override
-            public void callBackListItemSelected(UserData data) {
+            public void callBackListItemSelected(UserData item) {
                 Intent intent = new Intent(MainActivity.this, AddContactActivity.class);
                 intent.putExtra(BUNDLE_KEY_MODE, MODE_EDIT_CONTACT);
-                intent.putExtra(BUNDLE_KEY, data);
+                intent.putExtra(BUNDLE_KEY, item);
                 startActivity(intent);
             }
         });
 
-        // set the adapter to out ListView
-        lvMain.setAdapter(sAdapter);
-        tvNnumberOfContacts.setText("Contacts(" + sAdapter.getCount() + ")");
 
 
+
+        etSearch = (EditText) findViewById(R.id.etSearchContact);
+        etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filtered.clear();
+                UserData item;
+                String pattern = s.toString().toLowerCase();
+                for(int i=0;i<data.size();i++){
+                    item = (UserData) data.get(i);
+                    if(item.getDescription().toLowerCase().contains(pattern)){
+                        filtered.add(item);
+                    }
+                }
+                sAdapter.clear();
+                sAdapter.addAll(filtered);
+
+                String str = tvNnumberOfContacts.getText().toString();
+                int numberOfContacts = sAdapter.getCount();
+                str = str.replaceFirst("[(][0123456789]*[)]", "(" + numberOfContacts + ")");
+                tvNnumberOfContacts.setText(str);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
+
+
+
+
 
     private void showChooseDialog() {
         final ChooseDialog dialog = new ChooseDialog(this, R.style.FullHeightDialog);

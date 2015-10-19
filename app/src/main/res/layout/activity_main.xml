@@ -18,70 +18,86 @@
             android:id="@+id/tvContactNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
             android:gravity="center_vertical"
             android:text="Contacts(90)"
             android:textColor="@android:color/white"
-            android:textSize="20dp"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true" />
+            android:textSize="20dp" />
 
         <Button
             android:id="@+id/btnUploadPhoto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12dp"
+            android:layout_alignParentRight="true"
+            android:layout_margin="10dp"
             android:background="@drawable/btn_upload_photo"
             android:text="Upload Photo"
             android:textAllCaps="false"
-            android:layout_margin="10dp"
             android:textColor="@android:color/white"
-            android:layout_alignParentRight="true"
-             />
+            android:textSize="12dp" />
     </RelativeLayout>
+
+<EditText
+    android:id="@+id/etSearchContact"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/topPanel"
+    android:hint="Search Contact..."
+    android:padding="10dp"
+    android:textSize="24dp"
+    android:textColorHint="@android:color/darker_gray"
+    android:textColor="@android:color/holo_blue_dark"
+    android:background="@drawable/search_text"/>
+
 
 
     <RadioGroup
         android:id="@+id/rgBottom"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="#434343"
         android:orientation="horizontal">
+
         <RadioButton
             android:id="@+id/rbAll"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:button="@drawable/btn_all"
+            android:layout_marginLeft="30dp"
             android:layout_weight="1"
-            android:checked="true"
-            android:layout_marginLeft="30dp"/>
+            android:button="@drawable/btn_all"
+            android:checked="true" />
+
         <RadioButton
             android:id="@+id/rbFavorite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:button="@drawable/btn_favorite"
-            android:layout_weight="1"
             android:layout_marginLeft="10dp"
-            android:checked="false"/>
+            android:layout_weight="1"
+            android:button="@drawable/btn_favorite"
+            android:checked="false" />
+
         <RadioButton
             android:id="@+id/rbExit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:button="@drawable/btn_exit"
-            android:layout_weight="1"
             android:layout_marginLeft="10dp"
-            android:checked="false"/>
+            android:layout_weight="1"
+            android:button="@drawable/btn_exit"
+            android:checked="false" />
 
     </RadioGroup>
 
-
     <ListView
         android:id="@+id/listView"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_above="@id/rgBottom"
-        android:layout_below="@id/topPanel"
-        android:choiceMode="singleChoice"
-        android:layout_centerInParent="true"></ListView>
+        android:layout_below="@+id/etSearchContact"
+        android:layout_centerInParent="true"
+        android:choiceMode="singleChoice"></ListView>
 
 </RelativeLayout>
