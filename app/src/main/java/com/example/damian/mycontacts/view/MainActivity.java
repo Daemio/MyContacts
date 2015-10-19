@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataCame(List<UserData> userData) {
                 sAdapter.clear();
+                data = userData;
                 sAdapter.addAll(userData);
                 tvNnumberOfContacts.setText("Contacts(" + sAdapter.getCount() + ")");
             }
