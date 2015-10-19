@@ -1,38 +1,32 @@
 package com.example.damian.mycontacts.asynctasks;
 
 import android.os.AsyncTask;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
 
 import com.example.damian.mycontacts.database.DBGateWay;
+import com.example.damian.mycontacts.model.UserData;
 
 import java.util.List;
 
 /**
  * Created by Admin on 15.10.2015.
  */
-public class TaskGetAllContacts extends AsyncTask<Void,Void,Void> {
-    List data;
-    ArrayAdapter adapter;
-    TextView tvNumberOfContacts;
+public class TaskGetAllContacts extends AsyncTask<Void, List<UserData>, List<UserData>> {
 
-    public TaskGetAllContacts(List data, ArrayAdapter adapter, TextView tvNumberOfContacts) {
-        this.data = data;
-        this.adapter = adapter;
-        this.tvNumberOfContacts = tvNumberOfContacts;
+    private IDataBaseCallback baseCallback;
+
+    public TaskGetAllContacts(IDataBaseCallback baseCallback) {
+        this.baseCallback = baseCallback;
     }
 
     @Override
-    protected Void doInBackground(Void... params) {
-        data = DBGateWay.getAllContacts();
-        return null;
+    protected List<UserData> doInBackground(Void... params) {
+        return DBGateWay.getAllContacts();
     }
 
     @Override
-    protected void onPostExecute(Void aVoid) {
-        adapter.clear();
-        adapter.addAll(data);
-        tvNumberOfContacts.setText("Contacts("+adapter.getCount()+")");
-        super.onPostExecute(aVoid);
+    protected void onPostExecute(List<UserData> data) {
+        if (baseCallback != null) {
+            baseCallback.onDataCame(data);
+        }
     }
 }

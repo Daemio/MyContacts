@@ -5,34 +5,30 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.example.damian.mycontacts.database.DBGateWay;
+import com.example.damian.mycontacts.model.UserData;
 
 import java.util.List;
 
 /**
  * Created by Admin on 15.10.2015.
  */
-public class TaskGetFavoriteContacts extends AsyncTask<Void,Void,Void>{
-    List data;
-    ArrayAdapter adapter;
-    TextView tvNumberOfContacts;
+public class TaskGetFavoriteContacts extends AsyncTask<Void,List<UserData>,List<UserData>>{
+    private IDataBaseCallback baseCallback;
 
-    public TaskGetFavoriteContacts(List data, ArrayAdapter adapter, TextView tvNumberOfContacts) {
-        this.data = data;
-        this.adapter = adapter;
-        this.tvNumberOfContacts = tvNumberOfContacts;
+    public TaskGetFavoriteContacts(IDataBaseCallback baseCallback) {
+        this.baseCallback = baseCallback;
     }
 
     @Override
-    protected Void doInBackground(Void... params) {
-        data = DBGateWay.getFavoriteContacts();
-        return null;
+    protected List<UserData> doInBackground(Void...params) {
+        return DBGateWay.getFavoriteContacts();
+
     }
 
     @Override
-    protected void onPostExecute(Void aVoid) {
-        adapter.clear();
-        adapter.addAll(data);
-        tvNumberOfContacts.setText("Favorite("+adapter.getCount()+")");
-        super.onPostExecute(aVoid);
+    protected void onPostExecute(List<UserData> data) {
+        if (baseCallback != null) {
+            baseCallback.onDataCame(data);
+        }
     }
 }

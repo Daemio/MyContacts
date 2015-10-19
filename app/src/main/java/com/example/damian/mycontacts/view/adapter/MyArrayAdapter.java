@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.Filter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,6 +16,8 @@ import com.example.damian.mycontacts.R;
 import com.example.damian.mycontacts.TheApplication;
 import com.example.damian.mycontacts.model.UserData;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 
 /**
  * Created by Admin on 02.10.2015.
@@ -26,11 +29,12 @@ public class MyArrayAdapter extends ArrayAdapter<UserData> {
 
     private MyCallback myCallback;
 
+
     public void setMyCallback(MyCallback myCallback) {
         this.myCallback = myCallback;
     }
 
-    static  class ViewHolder{
+    static class ViewHolder {
         TextView tvNumber;
         TextView tvDescription;
         ImageView imageView;
@@ -51,7 +55,7 @@ public class MyArrayAdapter extends ArrayAdapter<UserData> {
             holder.cbFavorite = (CheckBox) v.findViewById(R.id.checkBoxFavorite);
             v.setTag(holder);
 
-        }else{
+        } else {
             //recycled so no neeed to inflate and find views by id
             holder = (ViewHolder) v.getTag();
         }
@@ -99,8 +103,7 @@ public class MyArrayAdapter extends ArrayAdapter<UserData> {
                 }
             }
         });
-
-
         return v;
     }
+
 }

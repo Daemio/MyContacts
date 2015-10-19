@@ -2,6 +2,7 @@ package com.example.damian.mycontacts.view;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 import com.example.damian.mycontacts.MyCallback;
 import com.example.damian.mycontacts.R;
 import com.example.damian.mycontacts.Utils;
+import com.example.damian.mycontacts.asynctasks.IDataBaseCallback;
 import com.example.damian.mycontacts.asynctasks.TaskDeleteContact;
 import com.example.damian.mycontacts.asynctasks.TaskGetAllContacts;
 import com.example.damian.mycontacts.asynctasks.TaskGetFavoriteContacts;
@@ -52,8 +54,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        TaskGetAllContacts taskAll = new TaskGetAllContacts(data,sAdapter,tvNnumberOfContacts);
-        taskAll.execute();
+        new TaskGetAllContacts(new IDataBaseCallback() {
+            @Override
+            public void onDataCame(List<UserData> userData) {
+                sAdapter.clear();
+                sAdapter.addAll(userData);
+                tvNnumberOfContacts.setText("Contacts(" + sAdapter.getCount() + ")");
+            }
+        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         rgBottom.check(R.id.rbAll);
 
     }
@@ -71,20 +79,24 @@ public class MainActivity extends AppCompatActivity {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
                     case R.id.rbAll:
-                        //sAdapter.clear();
-                        //data = DBGateWay.getAllContacts();
-                        //sAdapter.addAll(data);
-                        TaskGetAllContacts taskAll = new TaskGetAllContacts(data,sAdapter,tvNnumberOfContacts);
-                        taskAll.execute();
-                        //tvNnumberOfContacts.setText("Contacts(" + sAdapter.getCount() + ")");
+                        new TaskGetAllContacts(new IDataBaseCallback() {
+                            @Override
+                            public void onDataCame(List<UserData> userData) {
+                                sAdapter.clear();
+                                sAdapter.addAll(userData);
+                                tvNnumberOfContacts.setText("Contacts(" + sAdapter.getCount() + ")");
+                            }
+                        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         break;
                     case R.id.rbFavorite:
-                        //sAdapter.clear();
-                        //data = DBGateWay.getFavoriteContacts();
-                        //sAdapter.addAll(data);
-                        TaskGetFavoriteContacts taskFavorite = new TaskGetFavoriteContacts(data,sAdapter,tvNnumberOfContacts);
-                        taskFavorite.execute();
-                        //tvNnumberOfContacts.setText("Favorite(" + sAdapter.getCount() + ")");
+                        new TaskGetFavoriteContacts(new IDataBaseCallback() {
+                            @Override
+                            public void onDataCame(List<UserData> userData) {
+                                sAdapter.clear();
+                                sAdapter.addAll(userData);
+                                tvNnumberOfContacts.setText("Favorite(" + sAdapter.getCount() + ")");
+                            }
+                        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         break;
                     case R.id.rbExit:
                         finish();
